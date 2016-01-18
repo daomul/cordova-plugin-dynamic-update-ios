@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android"
+        id="cordova-plugin-dynamic-update" version="0.0.1">
+    <name>Dynamic Update</name>
+    <author>Lee Crossley (http://ilee.co.uk/)</author>
+    <description>Cordova Plugin to dynamically update the app www directory.</description>
+    <keywords>cordova, update, dynamic, www, public, zip</keywords>
+    <engines>
+        <engine name="cordova" version=">=3.0.0" />
+    </engines>
+    <js-module src="www/dynamicupdate.js" name="DynamicUpdate">
+        <clobbers target="dynamicupdate" />
+    </js-module>
+    <platform name="android">
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="DynamicUpdate">
+                <param name="android-package" value="uk.co.ilee.dynamicupdate.DynamicUpdate" />
+            </feature>
+        </config-file>
+        <config-file target="AndroidManifest.xml" parent="/*">
+            <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+            <uses-permission android:name="android.permission.INTERNET" />
+        </config-file>
+        <source-file src="src/android/DynamicUpdate.java" target-dir="src/uk/co/ilee/dynamicupdate" />
+    </platform>
+    <platform name="ios">
+　　　　　<config-file target="config.xml" parent="/*">
+　　　　　　　<!-- 替换插件类名 -->
+　　　　　　　<feature name="DynamicUpdate">
+　　　　　　　　　<param name="ios-package" value="DynamicUpdate"/>
+　　　　　　　</feature>
+　　　　　</config-file>
+    　　　<!-- 引用插件的源文件，按照这种格式把所有的原生类的文件引入 -->
+　　　　　<source-file src="src/ios/DynamicUpdate.m" />
+　　　　　<header-file src="src/ios/DynamicUpdate.h" />
+　　　　　<!-- 引用插件的需要支持的框架，没有引用平台可以注释调 -->
+　　　　　<!-- <framework src="AudioToolbox.framework" weak="true" /> -->
+　　</platform>
+</plugin>

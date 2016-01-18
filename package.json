@@ -1,0 +1,38 @@
+{
+  "name": "cordova-plugin-dynamic-update-ios",
+  "version": "0.0.1",
+  "author": "Axiba (daomul)",
+  "description": "Cordova Plugin to dynamically update the app www directory.",
+  "cordova": {
+    "id": "cordova-plugin-dynamic-update-ios",
+    "platforms": [
+      "ios",
+      "android"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daomul/cordova-plugin-dynamic-update-ios.git"
+  },
+  "keywords": [
+    "cordova",
+    "update",
+    "dynamic",
+    "www",
+    "public",
+    "zip",
+    "ecosystem:cordova",
+    "cordova-ios"
+  ],
+  "engines": [
+    {
+      "name": "cordova",
+      "version": ">=3.0.0"
+    }
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/daomul/cordova-plugin-dynamic-update-ios/issues"
+  },
+  "homepage": "https://github.com/daomul/cordova-plugin-dynamic-update-ios#readme"
+}
