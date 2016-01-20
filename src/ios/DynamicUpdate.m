@@ -12,70 +12,129 @@
 
 @interface DynamicUpdate ()
 @property (nonatomic, weak) NSURLConnection *connection;
-@property (nonatomic, weak) NSMutableData *connectionData;
+@property (nonatomic, strong) NSMutableData *connectionData;
 @property (nonatomic, weak) NSString *callbackId;
 
 @end
 
 @implementation DynamicUpdate
 
--(BOOL)download:(CDVInvokedUrlCommand *)command
+#pragma mark -- CDVInvokedUrlCommand method
+
+/**
+ *  download zip file from the url service
+ */
+-(void)download:(CDVInvokedUrlCommand *)command
 {
     //拿到传入的参数
     NSString* path = [command argumentAtIndex:0 withDefault:nil];
-    
+
     //文件地址
-    NSString *urlAsString = @"http://files.cnblogs.com/zhuqil/UIWebViewDemo.zip";
+    NSString *urlAsString = @"http://files.cnblogs.com/files/daomul/UIWebViewDemo.zip";
     NSURL    *url = [NSURL URLWithString:urlAsString];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    NSMutableData *data = [[NSMutableData alloc] init];
-    self.connectionData = data;
+    _connectionData = [[NSMutableData alloc] init];
     NSURLConnection *newConnection = [[NSURLConnection alloc]
                                       initWithRequest:request
                                       delegate:self
                                       startImmediately:YES];
     self.connection = newConnection;
-    if (self.connection != nil){
-        NSLog(@"Successfully created the connection");
-    } else {
-        NSLog(@"Could not create the connection");
+    if (self.connection == nil){
+        [self reBackCDVResult:@"data connection error"];
     }
-    
-    NSLog(@"writeToFile");
-    
-    return true;
+
 }
-- (void) connection:(NSURLConnection *)connection
-   didFailWithError:(NSError *)error{
-    NSLog(@"An error happened");
-    NSLog(@"%@", error);
+
+#pragma mark -- private method
+
+/**
+ * take SSZipArchive unzip the files
+ */
+-(void)unzip:(NSString *)zipPath destinationPath:(NSString *)destinationPath
+{
+    @try {
+        NSError *error;
+
+        //获取安装文件目录
+        NSArray *arr = [[NSBundle mainBundle] pathsForResourcesOfType:nil inDirectory:@"www"];
+        NSMutableString *strpath = [[NSMutableString alloc]init];
+        strpath = [self spliteString:[arr objectAtIndex:0]];
+        NSFileManager *manager = [NSFileManager defaultManager];
+
+        //判断www目录是否已存在，存在则将其先移除
+        if ([manager fileExistsAtPath:strpath])
+        {
+            //removing destination, so soucer may be copied
+            if ([manager removeItemAtPath:strpath error:&error])
+            {
+                if([SSZipArchive unzipFileAtPath:zipPath toDestination:strpath overwrite:YES password:nil error:&error delegate:self]) {
+
+                    if (arr.count > 0) {
+                        error=nil;
+                        [self.webView reload];
+
+                        [self reBackCDVResult:@"update sucess"];
+                    }
+
+                } else {
+                    [self reBackCDVResult:@"unzip error"];
+                }
+
+            }
+        }
+
+    } @catch(NSException* exception) {
+        [self reBackCDVResult:@"unzip error"];
+    }
 }
-- (void) connection:(NSURLConnection *)connection
-     didReceiveData:(NSData *)data{
-    NSLog(@"Received data");
-    [self.connectionData appendData:data];
+-(NSMutableString *)spliteString:(NSString *)str
+{
+    NSMutableString *newStr = [[NSMutableString alloc]init];
+    NSArray *array = [str componentsSeparatedByString:@"/"];
+    for (int i = 0; i < [array count] - 1; i++) {
+        [newStr appendString:[array objectAtIndex:i]];
+        [newStr appendString:@"/"];
+    }
+    return newStr;
 }
-- (void) connectionDidFinishLoading
-:(NSURLConnection *)connection{
-    /* 下载的数据 */
-    
+-(void)reBackCDVResult:(NSString *)message
+{
+    CDVPluginResult * result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:message];
+    [self.commandDelegate sendPluginResult:result callbackId:_callbackId];
+}
+
+#pragma mark -- NSURLConnection Delegate
+
+- (void) connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
+{
+    [self reBackCDVResult:[NSString stringWithFormat:@"%@",error]];
+}
+- (void) connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
+{
+    [_connectionData appendData:data];
+}
+- (void) connectionDidFinishLoading:(NSURLConnection *)connection
+{
+    /* do something with the data here */
+
     NSLog(@"下载成功");
-    if ([self.connectionData writeToFile:@"update.zip" atomically:YES]) {
+    NSString *applicationDocumentsDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString *storePath = [applicationDocumentsDir stringByAppendingPathComponent:@"UIWebViewDemo.zip"];
+
+    BOOL iSucess = [_connectionData writeToFile:storePath atomically:YES];
+    if (iSucess) {
         NSLog(@"保存成功.");
-        CDVPluginResult * result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"下载成功"];
-        [self.commandDelegate sendPluginResult:result callbackId:_callbackId];
+
+        [self unzip:storePath destinationPath:applicationDocumentsDir];
     }
     else
     {
         NSLog(@"保存失败.");
-        CDVPluginResult * result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"下载失败"];
-        [self.commandDelegate sendPluginResult:result callbackId:_callbackId];
+        [self reBackCDVResult:@"save error"];
     }
-    
-    /* do something with the data here */
 }
-- (void) connection:(NSURLConnection *)connection
- didReceiveResponse:(NSURLResponse *)response{
-    [self.connectionData setLength:0];
+- (void) connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
+{
+    [_connectionData setLength:0];
 }
 @end

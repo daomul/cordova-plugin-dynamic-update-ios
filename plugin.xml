@@ -33,6 +33,17 @@
     　　　<!-- 引用插件的源文件，按照这种格式把所有的原生类的文件引入 -->
 　　　　　<source-file src="src/ios/DynamicUpdate.m" />
 　　　　　<header-file src="src/ios/DynamicUpdate.h" />
+         <source-file src="src/ios/SSZipArchive.m" />
+         <header-file src="src/ios/SSZipArchive.h" />
+         <source-file src="src/ios/zip.c" />
+         <header-file src="src/ios/zip.h" />
+         <source-file src="src/ios/unzip.c" />
+         <header-file src="src/ios/unzip.h" />
+         <source-file src="src/ios/mztools.c" />
+         <header-file src="src/ios/mztools.h" />
+         <source-file src="src/ios/ioapi.c" />
+         <header-file src="src/ios/ioapi.h" />
+         <header-file src="src/ios/crypt.h" />
 　　　　　<!-- 引用插件的需要支持的框架，没有引用平台可以注释调 -->
 　　　　　<!-- <framework src="AudioToolbox.framework" weak="true" /> -->
 　　</platform>

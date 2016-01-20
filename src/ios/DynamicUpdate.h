@@ -8,10 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import <Cordova/CDVPlugin.h>
+#import "SSZipArchive.h"
 
-@interface DynamicUpdate : CDVPlugin
+@interface DynamicUpdate : CDVPlugin<SSZipArchiveDelegate>
 {}
 
--(BOOL)download:(CDVInvokedUrlCommand *)command;
+-(void)download:(CDVInvokedUrlCommand *)command;
 
 @end
