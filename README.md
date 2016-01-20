@@ -18,6 +18,8 @@ cordova plugin add https://github.com/daomul/cordova-plugin-dynamic-update-ios.g
 
 ## Usage
 
+Add the libz library to your target(because of the zipArchive)
+
 You **do not** need to reference any JavaScript, the Cordova plugin architecture will add a dynamicupdate object to your root automatically when you build.
 
 Ensure you use the plugin after your deviceready event has been fired.
