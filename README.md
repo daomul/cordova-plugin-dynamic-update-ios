@@ -13,7 +13,7 @@ cordova plugin add cordova-plugin-dynamic-update-ios
 #### Latest version from GitHub
 
 ```
-cordova plugin add https://github.com/leecrossley/cordova-plugin-dynamic-update.git
+cordova plugin add https://github.com/daomul/cordova-plugin-dynamic-update-ios.git
 ```
 
 ## Usage
@@ -27,22 +27,20 @@ Ensure you use the plugin after your deviceready event has been fired.
 Downloads the zip file of your update.
 
 ```js
-var url = "http://your.zip.url/file.zip";
-
-dynamicupdate.download(onSuccess, onError, url);
-```
-
-### Deploy
-
-Deploys the last downloaded zip file. There is no success callback, as the updated app is automatically started.
-
-```js
-dynamicupdate.deploy(onError);
+dynamicupdate.download(
+     function (result) {
+       alert(result);
+     },
+     function (error) {
+        alert("Scanning failed: " + error);
+     },
+     "http://files.cnblogs.com/files/daomul/update.zip"
+);
 ```
 
 ## Platforms
 
-iOS only. Android guidelines prohibit this behaviour.
+iOS only. Android maybe u can call : https://github.com/leecrossley/cordova-plugin-dynamic-update.
 
 ## License
 

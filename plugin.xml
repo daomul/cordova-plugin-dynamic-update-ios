@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android"
-        id="cordova-plugin-dynamic-update" version="0.0.1">
+        id="cordova-plugin-dynamic-update-ios" version="0.0.1">
     <name>Dynamic Update</name>
-    <author>Lee Crossley (http://ilee.co.uk/)</author>
+    <author>daomul (http://www.jianshu.com/users/1967b163cb61/latest_articles)</author>
     <description>Cordova Plugin to dynamically update the app www directory.</description>
     <keywords>cordova, update, dynamic, www, public, zip</keywords>
     <engines>
