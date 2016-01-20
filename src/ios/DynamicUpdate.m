@@ -27,11 +27,10 @@
 -(void)download:(CDVInvokedUrlCommand *)command
 {
     //拿到传入的参数
-    NSString* path = [command argumentAtIndex:0 withDefault:nil];
+    NSMutableDictionary* pathArr = [command argumentAtIndex:0 withDefault:nil];
+    NSString *urlAsString = [pathArr objectForKey:@"url"];
 
-    //文件地址
-    NSString *urlAsString = @"http://files.cnblogs.com/files/daomul/UIWebViewDemo.zip";
-    NSURL    *url = [NSURL URLWithString:urlAsString];
+    NSURL *url = [NSURL URLWithString:urlAsString];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     _connectionData = [[NSMutableData alloc] init];
     NSURLConnection *newConnection = [[NSURLConnection alloc]
@@ -50,7 +49,7 @@
 /**
  * take SSZipArchive unzip the files
  */
--(void)unzip:(NSString *)zipPath destinationPath:(NSString *)destinationPath
+-(void)unZip:(NSString *)zipPath destinationPath:(NSString *)destinationPath
 {
     @try {
         NSError *error;
@@ -117,15 +116,16 @@
 {
     /* do something with the data here */
 
-    NSLog(@"下载成功");
+    NSLog(@"下载成功.");
     NSString *applicationDocumentsDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    NSString *storePath = [applicationDocumentsDir stringByAppendingPathComponent:@"UIWebViewDemo.zip"];
+    // the zip name which we called is update ,but u can change it if u need
+    NSString *storePath = [applicationDocumentsDir stringByAppendingPathComponent:@"update.zip"];
 
     BOOL iSucess = [_connectionData writeToFile:storePath atomically:YES];
     if (iSucess) {
         NSLog(@"保存成功.");
 
-        [self unzip:storePath destinationPath:applicationDocumentsDir];
+        [self unZip:storePath destinationPath:applicationDocumentsDir];
     }
     else
     {
